@@ -1,4 +1,4 @@
-# Mini Memory Allocator
+# Mini Memory Allocator (mini-malloc)
 
 A custom memory allocator implemented in C that provides a simplified version of `malloc`, `calloc`, `realloc`, and `free`.  
 This project was built step by step to explore low-level memory management, alignment, fragmentation handling, and allocation strategies.
@@ -9,60 +9,52 @@ This project was built step by step to explore low-level memory management, alig
 
 - Build a self-contained allocator that manages a 1 MB heap in user space.
 - Implement core allocation primitives: `my_malloc`, `my_calloc`, `my_realloc`, `my_free`.
-- Explore allocation strategies: `FIRST_FIT` and `BEST_FIT`.
-- Understand and mitigate fragmentation through block splitting and coalescing.
+- Explore allocation strategies: **FIRST_FIT** and **BEST_FIT**.
+- Understand and mitigate fragmentation via block splitting and coalescing.
 - Add debugging utilities such as `print_heap()` and `check_invariants()`.
-- Run performance and fragmentation tests to compare allocation strategies.
+- Run performance and fragmentation tests to compare strategies.
 
 ---
 
 ## Key Features
 
-- **Heap simulation**: Allocations are managed inside a fixed-size 1 MB buffer.
-- **Block headers**: Each block stores metadata (size, free/used state, next pointer).
-- **Alignment guarantee**: All returned pointers are 16-byte aligned.
-  - Example: a request of 18 bytes results in a 32-byte aligned allocation.
+- **Heap simulation**: allocations managed inside a fixed-size 1 MB buffer.
+- **Block headers**: metadata per block (size, free/used, next pointer).
+- **Alignment**: all returned pointers are 16-byte aligned.  
+  Example: request(18) → allocated(32).
 - **Allocation strategies**:
-  - **FIRST_FIT**: Selects the first available free block large enough.
-  - **BEST_FIT**: Selects the smallest free block large enough.
-- **Fragmentation management**:
-  - **Splitting**: Large free blocks are split when possible.
-  - **Coalescing**: Adjacent free blocks are merged during `my_free`.
+  - `FIRST_FIT`: first free block large enough.
+  - `BEST_FIT`: smallest free block large enough.
+- **Fragmentation handling**: splitting and coalescing of blocks.
 - **Debugging tools**:
-  - `print_heap()` dumps block state (address, size, free/used).
-  - `check_invariants()` validates internal consistency.
-  - `check_leaks()` reports unfreed allocations.
-- **Test suite**:
-  - Functional tests for correctness.
-  - Fragmentation tests to observe block splitting/merging.
-  - Performance tests comparing `FIRST_FIT` vs `BEST_FIT`.
+  - `print_heap()` → dumps heap state.
+  - `check_invariants()` → validates consistency.
+  - `check_leaks()` → reports unfreed allocations.
+- **Test suite**: functional, fragmentation, and performance tests.
 
 ---
 
 ## Limitations
 
 - No detection of double frees.
-- No detection of dangling pointer usage.
-- No guard against freeing memory that was not allocated by this allocator.
-- Fixed heap size (1 MB). Out-of-memory is signaled by returning `NULL`.
+- No protection against dangling pointers.
+- Fixed heap size (1 MB). Out-of-memory is signaled with `NULL`.
 
 ---
 
 ## Project Structure
 
-.
-├── include/
-│ └── allocator.h # Public API and type definitions
-├── src/
-│ ├── allocator.c # Allocation logic (malloc, free, etc.)
-│ ├── heap.c # Heap initialization
-│ └── utils.c # Helper utilities
-├── tests/
-│ ├── test_allocator.c # Basic API and correctness tests
-│ ├── frag_test.c # Fragmentation behavior tests
-│ └── perf_test.c # Performance comparison (FIRST_FIT vs BEST_FIT)
-├── Makefile # Build and test automation
-└── README.md # Project documentation
+```plaintext
+include/allocator.h      # API definitions
+src/allocator.c          # Allocation logic
+src/heap.c               # Heap initialization
+src/utils.c              # Helpers
+tests/test_allocator.c   # API tests
+tests/frag_test.c        # Fragmentation tests
+tests/perf_test.c        # Performance tests
+Makefile                 # Build & test automation
+README.md                # Project documentation
+```
 
 ---
 
@@ -70,15 +62,18 @@ This project was built step by step to explore low-level memory management, alig
 
 ### Fragmentation Test
 
+```plaintext
 === Fragmentation Test ===
 Allocated A, B
 Freed B
 Allocated C (inside B’s freed space)
 Freed A and C
 Heap invariant check: OK
+```
 
 ### Performance Test
 
+```plaintext
 === Performance Test ===
 
 Using FIRST_FIT:
@@ -90,6 +85,9 @@ Using BEST_FIT:
 Allocations: 1000
 Blocks traversed: 188000
 Average per allocation: 188.00
+
+=== Performance Test Finished ===
+```
 
 ---
 
@@ -112,18 +110,4 @@ Average per allocation: 188.00
 
 ---
 
-This project is both a **learning exercise** and a **foundation** for understanding how memory allocators work under the hood.  
-It demonstrates how higher-level abstractions like `malloc` can be implemented using simple but careful memory management logic.
-
-⸻
-
-Commit message for this push:
-
-git commit -am "docs: add detailed README for mini-malloc
-
-- Added project overview and goals
-- Documented key features, limitations, and structure
-- Included example outputs from fragmentation and performance tests
-- Highlighted achievements and possible next steps"
-
-⸻
+This project is both a learning exercise and a foundation for understanding how memory allocators work under the hood.
